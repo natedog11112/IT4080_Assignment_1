@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using System.Security.Cryptography;
+using System.Linq;
 
 public class ChatServer : NetworkBehaviour
 {
@@ -10,7 +11,6 @@ public class ChatServer : NetworkBehaviour
     const ulong SYSTEM_ID = ulong.MaxValue;
     private ulong[] dmClientIds = new ulong[2];
     private ulong[] soleclient = new ulong[1];
-    private ulong[] connectedclients = new ulong[0];
     void Start()
     {
         chatUi.printEnteredText = false;
@@ -38,11 +38,10 @@ public class ChatServer : NetworkBehaviour
 
     private void ServerOnClientConnected(ulong clientId)
     {
-        
         soleclient[0] = clientId;
         ClientRpcParams rpcParams = default;
         rpcParams.Send.TargetClientIds = soleclient;
-        ReceiveChatMessageClientRpc("I see you joined", 0, rpcParams);
+        ReceiveChatMessageClientRpc("I see you joined", SYSTEM_ID, rpcParams);
         SendChatMessageServerRpc($"Player {clientId} has joined");
     }
     private void ServerOnClientDisconnected(ulong clientId)
@@ -100,6 +99,16 @@ public class ChatServer : NetworkBehaviour
     {
         dmClientIds[0] = from;
         dmClientIds[1] = to;
+
+        bool clientAvail = false;
+
+        foreach(ulong clientId in NetworkManager.ConnectedClientsIds)
+        {
+            if(to == clientId)
+            {
+                clientAvail = true;
+            }
+        }
         
         ClientRpcParams rpcParams = default;
         rpcParams.Send.TargetClientIds = dmClientIds;
@@ -108,6 +117,15 @@ public class ChatServer : NetworkBehaviour
         //ReceiveChatMessageClientRpc($"<whisper> {message}", from, rpcParams);
 
         //clientIds[0] = to;
-        ReceiveChatMessageClientRpc($"<whisper> {message}", from, rpcParams);
+
+        if(clientAvail == true)
+        {
+            ReceiveChatMessageClientRpc($"<whisper> {message}", from, rpcParams);
+        }
+        else
+        {
+            ReceiveChatMessageClientRpc("This user is not or has never been connected", SYSTEM_ID, rpcParams);
+        }
+        //ReceiveChatMessageClientRpc($"<whisper> {message}", from, rpcParams);
     }
 }
