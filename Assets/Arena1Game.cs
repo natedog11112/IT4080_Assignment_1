@@ -61,30 +61,29 @@ public class Arena1Game : NetworkBehaviour {
     {
         foreach(ulong clientId in NetworkManager.ConnectedClientsIds)
         {
-            if (clientId != 0){
-                //if (transform.position.x < 0){
-
-                //}
+            if (clientId >= 0)
+            {
+                
             }
         }
     }
-
+    
+    private Player SpawnPrefab;
     private void SpawnPlayers()
     {
         
         foreach(ulong clientId in NetworkManager.ConnectedClientsIds)
         {
             if (clientId == 0){
-                Player playerSpawn = Instantiate(hostPrefab, NextPosition(), Quaternion.identity);
-                playerSpawn.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
-                playerSpawn.playerColorNetVar.Value = (Color.red);
+                SpawnPrefab = hostPrefab;
             }
             else
             {
-                Player playerSpawn = Instantiate(playerPrefab, NextPosition(), Quaternion.identity);
-                playerSpawn.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
-                playerSpawn.playerColorNetVar.Value = NextColor();
+                SpawnPrefab = playerPrefab;
             }
+            Player playerSpawn = Instantiate(SpawnPrefab, NextPosition(), Quaternion.identity);
+            playerSpawn.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+            playerSpawn.playerColorNetVar.Value = NextColor();
             
         }
     }

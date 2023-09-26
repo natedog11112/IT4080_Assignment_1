@@ -50,7 +50,7 @@ public class Player : NetworkBehaviour {
         playerBody.GetComponent<MeshRenderer>().material.color = playerColorNetVar.Value;
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = true)]
     private void MoveServerRpc(Vector3 movement, Vector3 rotation)
     {
         transform.Translate(movement);
@@ -73,7 +73,8 @@ public class Player : NetworkBehaviour {
     private Vector3 CalcMovement() {
         bool isShiftKeyDown = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
         float x_move = 0.0f;
-        float z_move = Input.GetAxis("Vertical");
+        float z_move = 0.0f;
+        z_move = Input.GetAxis("Vertical");
 
         if (isShiftKeyDown) {
             x_move = Input.GetAxis("Horizontal");
