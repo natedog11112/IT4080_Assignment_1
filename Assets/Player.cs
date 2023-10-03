@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.UIElements;
 
 
 
@@ -11,26 +12,49 @@ public class Player : NetworkBehaviour {
 
     public float movementSpeed = 50f;
     public float rotationSpeed = 130f;
-    public NetworkVariable<Color> playerColorNetVar = new NetworkVariable<Color>(Color.red);
+    public NetworkVariable<Color> PlayerColor2 = new NetworkVariable<Color>(Color.red);
     private Camera playerCamera;
 
     private GameObject playerBody;
 
-    private void Start()
+    private void NetworkInit()
     {
+        playerBody = transform.Find("playerBody").gameObject;
+        
         playerCamera = transform.Find("Camera").GetComponent<Camera>();
         playerCamera.enabled = IsOwner;
         playerCamera.GetComponent<AudioListener>().enabled = IsOwner;
-        playerBody = transform.Find("playerBody").gameObject;
+        
         ApplyColor();
+        PlayerColor2.OnValueChanged += OnPlayerColorChanged;
+        
     }
 
+    private void Awake() {
+        NetworkHelper.Log(this, "Awake");
+    }
+    private void Start()
+    {
+        NetworkHelper.Log(this, "Start");
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        NetworkHelper.Log(this, "OnNetworkSpawn");
+        NetworkInit();
+        base.OnNetworkSpawn();
+    }
     private void Update() {
         if (IsOwner){
             
             HandleInput();
         }
         
+    }
+
+    public void OnPlayerColorChanged(Color previous, Color current)
+    {
+        ApplyColor();
     }
     private void HandleInput()
     {
@@ -40,21 +64,46 @@ public class Player : NetworkBehaviour {
         if(movement != Vector3.zero || rotation != Vector3.zero)
         {
             
-            MoveServerRpc(CalcMovement(), CalcRotation());
+            MoveServerRpc(CalcMovement(), CalcRotation(), OwnerClientId);
         }
         
     }
 
     private void ApplyColor()
     {
-        playerBody.GetComponent<MeshRenderer>().material.color = playerColorNetVar.Value;
+        NetworkHelper.Log(this, $"Applying color {PlayerColor2.Value}");
+        playerBody.GetComponent<MeshRenderer>().material.color = PlayerColor2.Value;
     }
 
     [ServerRpc(RequireOwnership = true)]
-    private void MoveServerRpc(Vector3 movement, Vector3 rotation)
+    private void MoveServerRpc(Vector3 movement, Vector3 rotation, ulong ClientId)
     {
-        transform.Translate(movement);
-        transform.Rotate(rotation);
+                if (ClientId > 0)
+                {
+                    if(playerBody.transform.position.x + movement.x > 5)
+                    {
+                        movement.x = -1;
+                    }
+                    if(playerBody.transform.position.x + movement.x < 0)
+                    {
+                        movement.x = 1;
+                    }
+                    if(playerBody.transform.position.z + movement.z > 5)
+                    {
+                        movement.z = -1;
+                    }
+                    if(playerBody.transform.position.z + movement.z < 0)
+                    {
+                        movement.z = 1;
+                    }
+                    transform.Translate(movement);
+                    transform.Rotate(rotation);
+                }
+                else
+                {
+                    transform.Translate(movement);
+                    transform.Rotate(rotation);
+                }
     }
 
     // Rotate around the y axis when shift is not pressed

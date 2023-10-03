@@ -57,16 +57,6 @@ public class Arena1Game : NetworkBehaviour {
         
 
     }
-    //void Update()
-    //{
-        //foreach(ulong clientId in NetworkManager.ConnectedClientsIds)
-        //{
-            //if (clientId >= 0)
-            //{
-                
-            //}
-        //}
-    //}
     
     private Player SpawnPrefab;
     private void SpawnPlayers()
@@ -83,7 +73,7 @@ public class Arena1Game : NetworkBehaviour {
             }
             Player playerSpawn = Instantiate(SpawnPrefab, NextPosition(), Quaternion.identity);
             playerSpawn.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
-            playerSpawn.playerColorNetVar.Value = NextColor();
+            playerSpawn.PlayerColor2.Value = NextColor();
             
         }
     }
