@@ -20,7 +20,7 @@ public class LobbyManager : NetworkBehaviour
     }
 
     private void OnServerStarted() {
-        StartGame();
+        //StartGame();
         startButton.gameObject.SetActive(true);
         statusLabel.text = "Press Start";
     }
@@ -39,7 +39,7 @@ public class LobbyManager : NetworkBehaviour
     public void StartGame()
     {
         NetworkManager.SceneManager.LoadScene(
-            "TestChat", 
+            "Arena1", 
             UnityEngine.SceneManagement.LoadSceneMode.Single
         );
     }

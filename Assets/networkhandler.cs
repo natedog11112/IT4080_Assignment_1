@@ -11,73 +11,89 @@ public class networkhandler : NetworkBehaviour
         NetworkManager.OnClientStarted += OnClientStarted;
         NetworkManager.OnServerStarted += OnServerStarted;
     }
-        private bool hasPrinted = false;
-        private void printMe() {
-            if (hasPrinted) {
-                return;
-            }
-            Debug.Log("I AM");
-            hasPrinted = true;
+        private void PrintMe() {
             if (IsServer) {
-                Debug.Log($"  the Server! {NetworkManager.ServerClientId}");
+                NetworkHelper.Log($"I AM a Server! {NetworkManager.ServerClientId}");
             }
             if (IsHost) {
-                Debug.Log($"  the Host! {NetworkManager.ServerClientId}/{NetworkManager.LocalClientId}");
+                NetworkHelper.Log($"I AM a Host! {NetworkManager.ServerClientId}/{NetworkManager.LocalClientId}");
             }
             if (IsClient) {
-                Debug.Log($"  the Client! {NetworkManager.LocalClientId}");
+                NetworkHelper.Log($"I AM a Client! {NetworkManager.LocalClientId}");
             }
             if (!IsServer && !IsClient) {
-                Debug.Log("  Nothing yet");
-                hasPrinted = false;
+                NetworkHelper.Log("I AM Nothing yet");
             }
             
         }
 
         private void OnClientStarted()
         {
+            NetworkHelper.Log("!! Client Started !!");
             NetworkManager.OnClientConnectedCallback += ClientOnClientConnected;
             NetworkManager.OnClientDisconnectCallback += ClientOnClientDisconnected;
             NetworkManager.OnClientStopped += ClientOnClientStopped;
-            printMe();
+            PrintMe();
         }
 
         private void ClientOnClientConnected(ulong clientId)
         {
-            printMe();
+            if(IsHost)
+            {
+                
+            }
+            else{
+                NetworkHelper.Log($"I have Connected {clientId}");
+            }
+
         }
         private void ClientOnClientDisconnected(ulong clientId)
         {
-            
+            if(IsHost)
+            {
+                
+            }
+            else{
+                NetworkHelper.Log($"I have Disconnected {clientId}");
+            }
         }
         private void ClientOnClientStopped(bool indicator)
         {
+            NetworkHelper.Log("!! Client Stopped !!");
             NetworkManager.OnClientConnectedCallback -= ClientOnClientConnected;
             NetworkManager.OnClientDisconnectCallback -= ClientOnClientDisconnected;
             NetworkManager.OnClientStopped -= ClientOnClientStopped;
+            PrintMe();
         }
 
         private void OnServerStarted()
         {
+            NetworkHelper.Log("!! Server Started !!");
             NetworkManager.OnClientConnectedCallback += ServerOnClientConnected;
             NetworkManager.OnClientDisconnectCallback += ServerOnClientDisconnected;
             NetworkManager.OnServerStopped += ServerOnServerStopped;
+            PrintMe();
         }
 
         private void ServerOnClientConnected(ulong clientId)
         {
-            Debug.Log($"Client {clientId} connected to the server");
+            NetworkHelper.Log($"Client {clientId} connected to the server");
+            if(clientId == 0)
+            {
+                NetworkHelper.Log($"I have Connected {clientId}");
+            }
         }
         private void ServerOnClientDisconnected(ulong clientId)
         {
-            Debug.Log($"Client {clientId} disconnected to the server");
+            NetworkHelper.Log($"Client {clientId} disconnected from the server");
         }
         private void ServerOnServerStopped(bool indicator)
         {
-            hasPrinted = false;
+            NetworkHelper.Log("!! Server Stopped !!");
             NetworkManager.OnClientConnectedCallback -= ServerOnClientConnected;
             NetworkManager.OnClientDisconnectCallback -= ServerOnClientDisconnected;
             NetworkManager.OnServerStopped -= ServerOnServerStopped;
+            PrintMe();
         }
     }
 

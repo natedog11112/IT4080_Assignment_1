@@ -57,16 +57,16 @@ public class Arena1Game : NetworkBehaviour {
         
 
     }
-    void Update()
-    {
-        foreach(ulong clientId in NetworkManager.ConnectedClientsIds)
-        {
-            if (clientId >= 0)
-            {
+    //void Update()
+    //{
+        //foreach(ulong clientId in NetworkManager.ConnectedClientsIds)
+        //{
+            //if (clientId >= 0)
+            //{
                 
-            }
-        }
-    }
+            //}
+        //}
+    //}
     
     private Player SpawnPrefab;
     private void SpawnPlayers()
