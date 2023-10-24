@@ -40,6 +40,7 @@ public class Lobby : NetworkBehaviour
             }
             pc.UpdateDisplay();
         }
+        lobbyUi.EnableStart(networkedPlayers.AllPlayersReady());
     }
 
     private void ClientPopulateCards() {

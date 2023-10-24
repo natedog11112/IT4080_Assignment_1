@@ -85,4 +85,14 @@ public class NetworkedPlayers : NetworkBehaviour
         info.ready = ready;
         allNetPlayers[idx] = info;
     }
+
+    public bool AllPlayersReady() {
+        bool theyAre = true;
+        int idx = 0;
+        while(theyAre && idx < allNetPlayers.Count) {
+            theyAre = allNetPlayers[idx].ready;
+            idx += 1;
+        }
+        return theyAre;
+    }
 }
