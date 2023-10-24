@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TestChat.unity
     guid: 495873c466ffc0c44a457913a9717535
+  - enabled: 1
+    path: Assets/Scenes/Lobby.unity
+    guid: 8d1065d28db0806489011e2590067d62
   m_configObjects: {}
