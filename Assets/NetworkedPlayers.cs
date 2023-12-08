@@ -37,6 +37,7 @@ public class NetworkedPlayers : NetworkBehaviour
         NetworkPlayerInfo host = new NetworkPlayerInfo(NetworkManager.LocalClientId);
         host.ready = true;
         host.color = NextColor();
+        host.name = "host";
         allNetPlayers.Add(host);
     }
 
@@ -44,6 +45,7 @@ public class NetworkedPlayers : NetworkBehaviour
         NetworkPlayerInfo client = new NetworkPlayerInfo(clientId);
         client.ready = false;
         client.color = NextColor();
+        client.name = "player";
         allNetPlayers.Add(client);
     }
 

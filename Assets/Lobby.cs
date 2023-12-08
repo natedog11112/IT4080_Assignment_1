@@ -29,10 +29,11 @@ public class Lobby : NetworkBehaviour
     private void ServerPopulateCards() {
         lobbyUi.playerCards.Clear();
         foreach(NetworkPlayerInfo info in networkedPlayers.allNetPlayers) {
-            PlayerCard pc = lobbyUi.playerCards.AddCard("Some player");
+            PlayerCard pc = lobbyUi.playerCards.AddCard(info.name.ToString());
             pc.ready = info.ready;
             pc.clientId = info.clientId;
             pc.color = info.color;
+            pc.playerName = info.name.ToString();
             if (info.clientId == NetworkManager.LocalClientId) {
                 pc.ShowKick(false);
             } else {
@@ -46,10 +47,11 @@ public class Lobby : NetworkBehaviour
     private void ClientPopulateCards() {
         lobbyUi.playerCards.Clear();
         foreach(NetworkPlayerInfo info in networkedPlayers.allNetPlayers) {
-            PlayerCard pc = lobbyUi.playerCards.AddCard("Some player");
+            PlayerCard pc = lobbyUi.playerCards.AddCard(info.name.ToString());
             pc.clientId = info.clientId;
             pc.ready = info.ready;
             pc.color = info.color;
+            pc.playerName = info.name.ToString();
             pc.ShowKick(false);
             pc.UpdateDisplay();
         }

@@ -14,7 +14,7 @@ public class BulletSpawner : NetworkBehaviour
     private void Update() {
         if (IsServer) {
             if (shotCountDown > 0) {
-                shotCountDown -= Time.deltaTime;
+                shotCountDown -= Time.deltaTime * 2;
             }
         }
     }
